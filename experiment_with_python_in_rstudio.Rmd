@@ -1,13 +1,13 @@
 ---
 title: "Python Qiskit and R in RStudio -- first experiment"
 author: Andi Fugard
-date: 27 Oct 2022
+date: 28 Oct 2022
 output: 
   html_notebook: 
     code_folding: none
 ---
 
-How to use Qiskit (the Python package) to define and run a quantum circuit on an IBMQ computer, then plot the results in R -- all in RStudio.
+How to use Qiskit (the Python package) to define and run a quantum circuit on an IBMQ computer, then plot the results in R -- all in RStudio. Here's the [repo](https://github.com/InductiveStep/qiskit-r). Or click the button at the top right hand side of this page to download the Markdown file.
 
 I had already installed [Anaconda](https://www.anaconda.com/products/distribution) and run:
 
@@ -22,9 +22,9 @@ library(reticulate)
 library(tidyverse)
 ```
 
-Reticulate is used to get R to communcate with Python.
+{reticulate} is used to get R to communicate with Python.
 
-Now the Qiskit code to get going...
+Now the Qiskit code to get going in a Python chunk:
 
 ```{python}
 from qiskit import QuantumRegister, ClassicalRegister, QuantumCircuit, IBMQ, assemble, transpile, execute
@@ -32,7 +32,13 @@ from numpy import pi
 from qiskit.tools import job_monitor
 ```
 
-Here's a simple circuit with three qubits, two entangled.
+Here's a simple system with three qubits, two entangled.
+
+$$|\psi\rangle = \frac{|000\rangle + |011\rangle + |100\rangle + |111\rangle}{2}$$
+
+Numbering the qubits right to left, the first two (call them $q[0]$ and $q[1]$) are entangled, the third, $q[2]$, is unentangled with the first two. We are going to measure $q[0]$ first, which should cause $q[1]$ to collapse to the same state but leave $q[2]$ free to choose at random between 1 and 0. I've fiddled around with the sums for this system [over here](https://www.andifugard.info/measurement-in-quantum-computing/).
+
+Back to Python, to define the circuit:
 
 ```{python}
 qreg_q = QuantumRegister(3, 'q')
@@ -72,17 +78,19 @@ Load up the account:
 provider = IBMQ.load_account()
 ```
 
-See what backends I can access:
+See what backends I can access (I put this on one line as the output appears to be printed before print is called otherwise):
 
 ```{python}
 for backend in provider.backends(): print(backend)
 ```
 
-Choose *ibmq_lima*:
+I chose *ibmq_lima*:
 
 ```{python}
 lima = provider.get_backend('ibmq_lima')
 ```
+
+(And, note to self -- look up how to query queue length.)
 
 Send off the job!
 
@@ -93,38 +101,40 @@ job = execute(circuit,
 job.job_id()
 ```
 
-If RStudio crashes (and it did), then the job can be retrieved with:
+If RStudio crashes for any reason (and it did), then the job can be retrieved with the ID that would have been printed above before it crashed (or log into your IBM Quantum web account and find the ID there):
 
 ```{python}
 job = lima.retrieve_job('635aea27333aeb047289f3ba')
 ```
 
-Wait for bit... then:
+Use this command to query the status of the job:
 
 ```{python}
 job.status()
 ```
 
+There's another command that busy-waits until the job is done. Trying to interrupt it is what crashed RStudio, so I wouldn't recommend it!
+
+Once the job is done, the results:
+
 ```{python}
 res = job.result()
 ```
 
-Here are the results in Python:
+Here are the frequencies of each outcome in Python:
 
 ```{python}
 vals = res.get_counts(circuit)
 vals
 ```
 
-We can also see them in R:
+We can also see them in R using `py$` as a prefix on variable names:
 
 ```{r}
 py$vals
 ```
 
-Now how do I transform that into a data frame...?
-
-Maybe easier at the Python end:
+Now how do I transform that (it's a dictionary of some description) into a data frame...? I couldn't see an easy way in R (I didn't think very long). It was easier at the Python end:
 
 ```{python}
 import pandas
@@ -138,6 +148,8 @@ Back in R:
 ```{r}
 py$df
 ```
+
+And now we can ask ggplot to make a pic!
 
 ```{r}
 py$df |> 
