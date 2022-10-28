@@ -11,7 +11,7 @@
 
 <meta name="author" content="Andi Fugard" />
 
-<meta name="date" content="2022-10-27" />
+<meta name="date" content="2022-10-28" />
 
 <title>Python Qiskit and R in RStudio – first experiment</title>
 
@@ -1754,7 +1754,7 @@ display: none;
 <h1 class="title toc-ignore">Python Qiskit and R in RStudio – first
 experiment</h1>
 <h4 class="author">Andi Fugard</h4>
-<h4 class="date">27 Oct 2022</h4>
+<h4 class="date">28 Oct 2022</h4>
 
 </div>
 
@@ -1762,7 +1762,9 @@ experiment</h1>
 <!-- rnb-text-begin -->
 <p>How to use Qiskit (the Python package) to define and run a quantum
 circuit on an IBMQ computer, then plot the results in R – all in
-RStudio.</p>
+RStudio. Here’s the <a href="https://github.com/InductiveStep/qiskit-r">repo</a>. Or click the
+button at the top right hand side of this page to download the Markdown
+file.</p>
 <p>I had already installed <a href="https://www.anaconda.com/products/distribution">Anaconda</a> and
 run:</p>
 <pre><code>pip install qiskit[visualization]</code></pre>
@@ -1773,10 +1775,22 @@ run:</p>
 <pre class="r"><code>library(reticulate)
 library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxu4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4yIOKUgOKUgOKclCBnZ3Bsb3QyIDMuMy42ICAgICAg4pyUIHB1cnJyICAgMC4zLjQgXG7inJQgdGliYmxlICAzLjEuOCAgICAgIOKclCBkcGx5ciAgIDEuMC4xMFxu4pyUIHRpZHlyICAgMS4yLjEgICAgICDinJQgc3RyaW5nciAxLjQuMSBcbuKclCByZWFkciAgIDIuMS4zICAgICAg4pyUIGZvcmNhdHMgMC41LjIg4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG4ifQ== -->
+<pre><code>Registered S3 methods overwritten by &#39;dbplyr&#39;:
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+── Attaching packages ───────────────────────── tidyverse 1.3.2 ──✔ ggplot2 3.3.6      ✔ purrr   0.3.4 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.3      ✔ forcats 0.5.2 ── Conflicts ──────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Reticulate is used to get R to communcate with Python.</p>
-<p>Now the Qiskit code to get going…</p>
+<p>{reticulate} is used to get R to communicate with Python.</p>
+<p>Now the Qiskit code to get going in a Python chunk:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5mcm9tIHFpc2tpdCBpbXBvcnQgUXVhbnR1bVJlZ2lzdGVyLCBDbGFzc2ljYWxSZWdpc3RlciwgUXVhbnR1bUNpcmN1aXQsIElCTVEsIGFzc2VtYmxlLCB0cmFuc3BpbGUsIGV4ZWN1dGVcbmZyb20gbnVtcHkgaW1wb3J0IHBpXG5mcm9tIHFpc2tpdC50b29scyBpbXBvcnQgam9iX21vbml0b3JcbmBgYCJ9 -->
@@ -1786,7 +1800,17 @@ from qiskit.tools import job_monitor</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Here’s a simple circuit with three qubits, two entangled.</p>
+<p>Here’s a simple system with three qubits, two entangled.</p>
+<p><span class="math display">\[|\psi\rangle = \frac{|000\rangle +
+|011\rangle + |100\rangle + |111\rangle}{2}\]</span></p>
+<p>Numbering the qubits right to left, the first two (call them <span class="math inline">\(q[0]\)</span> and <span class="math inline">\(q[1]\)</span>) are entangled, the third, <span class="math inline">\(q[2]\)</span>, is unentangled with the first two.
+We are going to measure <span class="math inline">\(q[0]\)</span> first,
+which should cause <span class="math inline">\(q[1]\)</span> to collapse
+to the same state but leave <span class="math inline">\(q[2]\)</span>
+free to choose at random between 1 and 0. I’ve fiddled around with the
+sums for this system <a href="https://www.andifugard.info/measurement-in-quantum-computing/">over
+here</a>.</p>
+<p>Back to Python, to define the circuit:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5xcmVnX3EgPSBRdWFudHVtUmVnaXN0ZXIoMywgJ3EnKVxuY3JlZ19jID0gQ2xhc3NpY2FsUmVnaXN0ZXIoMywgJ2MnKVxuY2lyY3VpdCA9IFF1YW50dW1DaXJjdWl0KHFyZWdfcSwgY3JlZ19jKVxuXG5jaXJjdWl0LnJlc2V0KHFyZWdfcVswXSlcbmNpcmN1aXQucmVzZXQocXJlZ19xWzFdKVxuY2lyY3VpdC5yZXNldChxcmVnX3FbMl0pXG5jaXJjdWl0LmgocXJlZ19xWzBdKVxuY2lyY3VpdC5oKHFyZWdfcVsyXSlcbmNpcmN1aXQuY3gocXJlZ19xWzBdLCBxcmVnX3FbMV0pXG5jaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzBdLCBjcmVnX2NbMF0pXG5jaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzFdLCBjcmVnX2NbMV0pXG5jaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzJdLCBjcmVnX2NbMl0pXG5gYGAifQ== -->
@@ -1833,7 +1857,8 @@ appear in the Markdown other than by saving it and inserting a png…</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>See what backends I can access:</p>
+<p>See what backends I can access (I put this on one line as the output
+appears to be printed before print is called otherwise):</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5mb3IgYmFja2VuZCBpbiBwcm92aWRlci5iYWNrZW5kcygpOiBwcmludChiYWNrZW5kKVxuYGBgIn0= -->
@@ -1854,7 +1879,7 @@ ibm_oslo</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Choose <em>ibmq_lima</em>:</p>
+<p>I chose <em>ibmq_lima</em>:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5saW1hID0gcHJvdmlkZXIuZ2V0X2JhY2tlbmQoJ2libXFfbGltYScpXG5gYGAifQ== -->
@@ -1862,6 +1887,7 @@ ibm_oslo</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>(And, note to self – look up how to query queue length.)</p>
 <p>Send off the job!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
@@ -1873,8 +1899,10 @@ job.job_id()</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>If RStudio crashes (and it did), then the job can be retrieved
-with:</p>
+<p>If RStudio crashes for any reason (and it did), then the job can be
+retrieved with the ID that would have been printed above before it
+crashed (or log into your IBM Quantum web account and find the ID
+there):</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5qb2IgPSBsaW1hLnJldHJpZXZlX2pvYignNjM1YWVhMjczMzNhZWIwNDcyODlmM2JhJylcbmBgYCJ9 -->
@@ -1882,7 +1910,7 @@ with:</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Wait for bit… then:</p>
+<p>Use this command to query the status of the job:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5qb2Iuc3RhdHVzKClcbmBgYCJ9 -->
@@ -1893,6 +1921,9 @@ with:</p>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>There’s another command that busy-waits until the job is done. Trying
+to interrupt it is what crashed RStudio, so I wouldn’t recommend it!</p>
+<p>Once the job is done, the results:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5yZXMgPSBqb2IucmVzdWx0KClcbmBgYCJ9 -->
@@ -1900,7 +1931,7 @@ with:</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Here are the results in Python:</p>
+<p>Here are the frequencies of each outcome in Python:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG52YWxzID0gcmVzLmdldF9jb3VudHMoY2lyY3VpdClcbnZhbHNcbmBgYCJ9 -->
@@ -1912,7 +1943,8 @@ vals</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>We can also see them in R:</p>
+<p>We can also see them in R using <code>py$</code> as a prefix on
+variable names:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHkkdmFsc1xuYGBgIn0= -->
@@ -1923,13 +1955,13 @@ vals</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Now how do I transform that into a data frame…?</p>
-<p>Maybe easier at the Python end:</p>
+<p>Now how do I transform that (it’s a dictionary of some description)
+into a data frame…? I couldn’t see an easy way in R (I didn’t think very
+long). It was easier at the Python end:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5pbXBvcnQgcGFuZGFzXG5cbmRmID0gcGFuZGFzLkRhdGFGcmFtZShsaXN0KHZhbHMuaXRlbXMoKSksXG4gICAgICAgICAgICAgICAgICAgICAgY29sdW1ucyA9IFsnT3V0Y29tZScsICdGcmVxJ10pXG5kZlxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgcHl0aG9uXG5pbXBvcnQgcGFuZGFzXG5kZiA9IHBhbmRhcy5EYXRhRnJhbWUobGlzdCh2YWxzLml0ZW1zKCkpLFxuICAgICAgICAgICAgICAgICAgICAgIGNvbHVtbnMgPSBbJ091dGNvbWUnLCAnRnJlcSddKVxuZGZcbmBgYCJ9 -->
 <pre class="python"><code>import pandas
-
 df = pandas.DataFrame(list(vals.items()),
                       columns = [&#39;Outcome&#39;, &#39;Freq&#39;])
 df</code></pre>
@@ -1953,7 +1985,7 @@ df</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHkkZGZcbmBgYCJ9 -->
 <pre class="r"><code>py$df</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6OCwibmNvbCI6Miwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbOCDDlyAyXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJuV1R2MDdETUJERzNiU2hiY1EvQ1lGWVlFQU1DS2xXSTRURXlJQ1FHS0NvQW9uVmNRMjRwSGF3SFdnM0hvVkg0eGw0QU1DTzdZYUdNTGgzL3ZLN3kyZm5Pank3TzRydUlnQkFFN1NDQm1pR09nWGg3YzE1N3dSb1JXOGFvQVc2Sms0MXRLRVRJNjdyMVhFUG12MSt2MHpqZVJxWGFqeFg0NUtOU3pZdTJWaXpBS3lhL3FmWnUzRURUbytCamZzdXNnOGJ1ZHNmdXJqdDR0aldWUTRRTWpRaDBwa1BuTmdlNUFyekNYSGIxcmtnejVXNjVReXhFWktRc2hHWkdzWTEvNnh3YmN6WkN4RktwMUVoMTFqSVpqd1o2MlJMcjYvRnRRamlGRW52MVYvMHZqT0N1U0RXRFpGUUlQWkE0TkQ4WGhRR0xYdFF4N0o4UWdURjhNckczL3h1SFo4Z1NlQy9WUGwwa01sTE9xV3Nqa0pDb0ZsS253aXNVRHQvZWwwWHdpQVpFNndjdExmUUNtTWlKUmZ3aklvcjh5MS90OXZNWnVxUk01amtORldVUVc3Yi9MM2FydUN2MEkvQ2lobUZOL3VsT2hic2ZMdHI5d1hSQ0NrRTc0VXVxV25YNXBtaW5PbG1nZmx6aEpYaWhxZ0lhemt6THgvMThHUE9ubnJ4NHJRVWhocld6RHdQN0NzRGJ5eDByWllJZTZETWoyNllvb1NrYnJPcUQxbWNFV2FDTW4rYmtWWWxWRndoejBXWXAxNXhrL2dET2J6TXFoTUVBQUE9In0= -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6OCwibmNvbCI6Miwic3VtbWFyeSI6eyJEZXNjcmlwdGlvbiI6WyJkZiBbOCDDlyAyXSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJuV1RzVTdETUJDRzNiU2hKUUtFaEVBc01DQUdoRlNyRVVJd01xQktETFFJZ2NUcXVBWmNVanZZRHJRYmo4S2o4UXc4QUdESGRrTkRHTnc3Ly9udTh0dTVYcC9mSFVWM0VRQ2dDVnBCQXpSRG5ZTHc5cWJmUFFWYTBac0dhSUZsRTZjYTJ0Q0pFZGYxNnJnSHpWNnZWNmJ4UEkxTE5aNnJjY25HSlJ1WGJLeFpBTlpNLzdQczNiZ0JaOGZBeG4wWDJZZU4zTzBQWGR4MmNXenJLZ2NJR1pvUTZjd0hUbXdQYzRYNWhMaHRxeS9JYzZWdUpVTnNoQ1NrYkVTbWhuSE5QeXRjRzNQMlFvVFNhVlRJTlJheUdVL0dPdG5TNjJ0eExZSTRSZEo3OVJlOTc0eGdMb2gxUXlRVWlEMFFlRzErTHdxRGxqMm9ZMWsrSVlKaU9MRHhONzlieHlkSUV2Z3ZWVDRkWnZLU1RpbXJvNUFRYUpiU0p3SXIxTTZmWGxlRk1FekdCQ3NIN1MyMHdwaEl5UVU4cDJKZ3Z1WHZkcHZaVEQxeUJwT2Nwb295eUcyYnYxZTdMUGdyOUtPd2FrYmh6WDZwamdVNzMrN2FmVUUwUWdyQmU2RkxhdHExZWFZb1o3cFpZUDRjWWFXNElTckNlczdNeTBkZC9KaXpwMjU4c2pndWhhT0dkVFBQQS92T3dEc0xYYThsd2g0bzg3TWJwaWdocWR1czZWTVdoNFNab014Zlo2UlZDUlZYeUhNUjVxbFgzQ2orQUN6RGtWQVVCQUFBIn0= -->
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["Outcome"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Freq"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"000","2":"266"},{"1":"001","2":"21"},{"1":"010","2":"10"},{"1":"011","2":"247"},{"1":"100","2":"248"},{"1":"101","2":"13"},{"1":"110","2":"6"},{"1":"111","2":"213"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[8]},"pages":{}}}
@@ -1962,6 +1994,7 @@ df</code></pre>
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>And now we can ask ggplot to make a pic!</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHkkZGYgfD4gXG4gIGdncGxvdChhZXMoeCA9IE91dGNvbWUsIHkgPSBGcmVxLCBmaWxsID0gT3V0Y29tZSkpICtcbiAgZ2VvbV9jb2woKSArXG4gIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbj1cIm5vbmVcIilcbmBgYCJ9 -->
@@ -1977,7 +2010,7 @@ df</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlB5dGhvbiBRaXNraXQgYW5kIFIgaW4gUlN0dWRpbyAtLSBmaXJzdCBleHBlcmltZW50Ig0KYXV0aG9yOiBBbmRpIEZ1Z2FyZA0KZGF0ZTogMjcgT2N0IDIwMjINCm91dHB1dDogDQogIGh0bWxfbm90ZWJvb2s6IA0KICAgIGNvZGVfZm9sZGluZzogbm9uZQ0KLS0tDQoNCkhvdyB0byB1c2UgUWlza2l0ICh0aGUgUHl0aG9uIHBhY2thZ2UpIHRvIGRlZmluZSBhbmQgcnVuIGEgcXVhbnR1bSBjaXJjdWl0IG9uIGFuIElCTVEgY29tcHV0ZXIsIHRoZW4gcGxvdCB0aGUgcmVzdWx0cyBpbiBSIC0tIGFsbCBpbiBSU3R1ZGlvLg0KDQpJIGhhZCBhbHJlYWR5IGluc3RhbGxlZCBbQW5hY29uZGFdKGh0dHBzOi8vd3d3LmFuYWNvbmRhLmNvbS9wcm9kdWN0cy9kaXN0cmlidXRpb24pIGFuZCBydW46DQoNCmBgYA0KcGlwIGluc3RhbGwgcWlza2l0W3Zpc3VhbGl6YXRpb25dDQpgYGANCg0KUiBsaWJyYXJpZXM6DQoNCmBgYHtyfQ0KbGlicmFyeShyZXRpY3VsYXRlKQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpgYGANCg0KUmV0aWN1bGF0ZSBpcyB1c2VkIHRvIGdldCBSIHRvIGNvbW11bmNhdGUgd2l0aCBQeXRob24uDQoNCk5vdyB0aGUgUWlza2l0IGNvZGUgdG8gZ2V0IGdvaW5nLi4uDQoNCmBgYHtweXRob259DQpmcm9tIHFpc2tpdCBpbXBvcnQgUXVhbnR1bVJlZ2lzdGVyLCBDbGFzc2ljYWxSZWdpc3RlciwgUXVhbnR1bUNpcmN1aXQsIElCTVEsIGFzc2VtYmxlLCB0cmFuc3BpbGUsIGV4ZWN1dGUNCmZyb20gbnVtcHkgaW1wb3J0IHBpDQpmcm9tIHFpc2tpdC50b29scyBpbXBvcnQgam9iX21vbml0b3INCmBgYA0KDQpIZXJlJ3MgYSBzaW1wbGUgY2lyY3VpdCB3aXRoIHRocmVlIHF1Yml0cywgdHdvIGVudGFuZ2xlZC4NCg0KYGBge3B5dGhvbn0NCnFyZWdfcSA9IFF1YW50dW1SZWdpc3RlcigzLCAncScpDQpjcmVnX2MgPSBDbGFzc2ljYWxSZWdpc3RlcigzLCAnYycpDQpjaXJjdWl0ID0gUXVhbnR1bUNpcmN1aXQocXJlZ19xLCBjcmVnX2MpDQoNCmNpcmN1aXQucmVzZXQocXJlZ19xWzBdKQ0KY2lyY3VpdC5yZXNldChxcmVnX3FbMV0pDQpjaXJjdWl0LnJlc2V0KHFyZWdfcVsyXSkNCmNpcmN1aXQuaChxcmVnX3FbMF0pDQpjaXJjdWl0LmgocXJlZ19xWzJdKQ0KY2lyY3VpdC5jeChxcmVnX3FbMF0sIHFyZWdfcVsxXSkNCmNpcmN1aXQubWVhc3VyZShxcmVnX3FbMF0sIGNyZWdfY1swXSkNCmNpcmN1aXQubWVhc3VyZShxcmVnX3FbMV0sIGNyZWdfY1sxXSkNCmNpcmN1aXQubWVhc3VyZShxcmVnX3FbMl0sIGNyZWdfY1syXSkNCmBgYA0KDQpEcmF3IHRoZSBjaXJjdWl0Og0KDQpgYGB7cHl0aG9ufQ0KY2lyY3VpdC5kcmF3KCdtcGwnKS5zaG93KCkNCmBgYA0KDQpUaGlzIHdpbGwgcG9wIHVwIGluIGEgbmV3IHdpbmRvdzsgSSBjYW4ndCB3b3JrIG91dCBob3cgdG8gZ2V0IGl0IHRvIGFwcGVhciBpbiB0aGUgTWFya2Rvd24gb3RoZXIgdGhhbiBieSBzYXZpbmcgaXQgYW5kIGluc2VydGluZyBhIHBuZy4uLg0KDQohW10oY2lyY3VpdC5wbmcpDQoNCkVudGVyIHlvdXIgVE9QIFNFQ1JFVCBBUEkgdG9rZW4gaGVyZToNCg0KYGBge3B5dGhvbn0NCklCTVEuc2F2ZV9hY2NvdW50KCcxMzM3Jywgb3ZlcndyaXRlPVRydWUpDQpgYGANCg0KTG9hZCB1cCB0aGUgYWNjb3VudDoNCg0KYGBge3B5dGhvbn0NCnByb3ZpZGVyID0gSUJNUS5sb2FkX2FjY291bnQoKQ0KYGBgDQoNClNlZSB3aGF0IGJhY2tlbmRzIEkgY2FuIGFjY2VzczoNCg0KYGBge3B5dGhvbn0NCmZvciBiYWNrZW5kIGluIHByb3ZpZGVyLmJhY2tlbmRzKCk6IHByaW50KGJhY2tlbmQpDQpgYGANCg0KQ2hvb3NlICppYm1xX2xpbWEqOg0KDQpgYGB7cHl0aG9ufQ0KbGltYSA9IHByb3ZpZGVyLmdldF9iYWNrZW5kKCdpYm1xX2xpbWEnKQ0KYGBgDQoNClNlbmQgb2ZmIHRoZSBqb2IhDQoNCmBgYHtweXRob259DQpqb2IgPSBleGVjdXRlKGNpcmN1aXQsDQogICAgICAgICAgICAgIGJhY2tlbmQgPSBsaW1hLA0KICAgICAgICAgICAgICBzaG90cyA9IDEwMjQpDQpqb2Iuam9iX2lkKCkNCmBgYA0KDQpJZiBSU3R1ZGlvIGNyYXNoZXMgKGFuZCBpdCBkaWQpLCB0aGVuIHRoZSBqb2IgY2FuIGJlIHJldHJpZXZlZCB3aXRoOg0KDQpgYGB7cHl0aG9ufQ0Kam9iID0gbGltYS5yZXRyaWV2ZV9qb2IoJzYzNWFlYTI3MzMzYWViMDQ3Mjg5ZjNiYScpDQpgYGANCg0KV2FpdCBmb3IgYml0Li4uIHRoZW46DQoNCmBgYHtweXRob259DQpqb2Iuc3RhdHVzKCkNCmBgYA0KDQpgYGB7cHl0aG9ufQ0KcmVzID0gam9iLnJlc3VsdCgpDQpgYGANCg0KSGVyZSBhcmUgdGhlIHJlc3VsdHMgaW4gUHl0aG9uOg0KDQpgYGB7cHl0aG9ufQ0KdmFscyA9IHJlcy5nZXRfY291bnRzKGNpcmN1aXQpDQp2YWxzDQpgYGANCg0KV2UgY2FuIGFsc28gc2VlIHRoZW0gaW4gUjoNCg0KYGBge3J9DQpweSR2YWxzDQpgYGANCg0KTm93IGhvdyBkbyBJIHRyYW5zZm9ybSB0aGF0IGludG8gYSBkYXRhIGZyYW1lLi4uPw0KDQpNYXliZSBlYXNpZXIgYXQgdGhlIFB5dGhvbiBlbmQ6DQoNCmBgYHtweXRob259DQppbXBvcnQgcGFuZGFzDQpkZiA9IHBhbmRhcy5EYXRhRnJhbWUobGlzdCh2YWxzLml0ZW1zKCkpLA0KICAgICAgICAgICAgICAgICAgICAgIGNvbHVtbnMgPSBbJ091dGNvbWUnLCAnRnJlcSddKQ0KZGYNCmBgYA0KDQpCYWNrIGluIFI6DQoNCmBgYHtyfQ0KcHkkZGYNCmBgYA0KDQpgYGB7cn0NCnB5JGRmIHw+IA0KICBnZ3Bsb3QoYWVzKHggPSBPdXRjb21lLCB5ID0gRnJlcSwgZmlsbCA9IE91dGNvbWUpKSArDQogIGdlb21fY29sKCkgKw0KICB0aGVtZShsZWdlbmQucG9zaXRpb249Im5vbmUiKQ0KYGBgDQoNCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlB5dGhvbiBRaXNraXQgYW5kIFIgaW4gUlN0dWRpbyAtLSBmaXJzdCBleHBlcmltZW50Ig0KYXV0aG9yOiBBbmRpIEZ1Z2FyZA0KZGF0ZTogMjggT2N0IDIwMjINCm91dHB1dDogDQogIGh0bWxfbm90ZWJvb2s6IA0KICAgIGNvZGVfZm9sZGluZzogbm9uZQ0KLS0tDQoNCkhvdyB0byB1c2UgUWlza2l0ICh0aGUgUHl0aG9uIHBhY2thZ2UpIHRvIGRlZmluZSBhbmQgcnVuIGEgcXVhbnR1bSBjaXJjdWl0IG9uIGFuIElCTVEgY29tcHV0ZXIsIHRoZW4gcGxvdCB0aGUgcmVzdWx0cyBpbiBSIC0tIGFsbCBpbiBSU3R1ZGlvLiBIZXJlJ3MgdGhlIFtyZXBvXShodHRwczovL2dpdGh1Yi5jb20vSW5kdWN0aXZlU3RlcC9xaXNraXQtcikuIE9yIGNsaWNrIHRoZSBidXR0b24gYXQgdGhlIHRvcCByaWdodCBoYW5kIHNpZGUgb2YgdGhpcyBwYWdlIHRvIGRvd25sb2FkIHRoZSBNYXJrZG93biBmaWxlLg0KDQpJIGhhZCBhbHJlYWR5IGluc3RhbGxlZCBbQW5hY29uZGFdKGh0dHBzOi8vd3d3LmFuYWNvbmRhLmNvbS9wcm9kdWN0cy9kaXN0cmlidXRpb24pIGFuZCBydW46DQoNCmBgYA0KcGlwIGluc3RhbGwgcWlza2l0W3Zpc3VhbGl6YXRpb25dDQpgYGANCg0KUiBsaWJyYXJpZXM6DQoNCmBgYHtyfQ0KbGlicmFyeShyZXRpY3VsYXRlKQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpgYGANCg0Ke3JldGljdWxhdGV9IGlzIHVzZWQgdG8gZ2V0IFIgdG8gY29tbXVuaWNhdGUgd2l0aCBQeXRob24uDQoNCk5vdyB0aGUgUWlza2l0IGNvZGUgdG8gZ2V0IGdvaW5nIGluIGEgUHl0aG9uIGNodW5rOg0KDQpgYGB7cHl0aG9ufQ0KZnJvbSBxaXNraXQgaW1wb3J0IFF1YW50dW1SZWdpc3RlciwgQ2xhc3NpY2FsUmVnaXN0ZXIsIFF1YW50dW1DaXJjdWl0LCBJQk1RLCBhc3NlbWJsZSwgdHJhbnNwaWxlLCBleGVjdXRlDQpmcm9tIG51bXB5IGltcG9ydCBwaQ0KZnJvbSBxaXNraXQudG9vbHMgaW1wb3J0IGpvYl9tb25pdG9yDQpgYGANCg0KSGVyZSdzIGEgc2ltcGxlIHN5c3RlbSB3aXRoIHRocmVlIHF1Yml0cywgdHdvIGVudGFuZ2xlZC4NCg0KJCR8XHBzaVxyYW5nbGUgPSBcZnJhY3t8MDAwXHJhbmdsZSArIHwwMTFccmFuZ2xlICsgfDEwMFxyYW5nbGUgKyB8MTExXHJhbmdsZX17Mn0kJA0KDQpOdW1iZXJpbmcgdGhlIHF1Yml0cyByaWdodCB0byBsZWZ0LCB0aGUgZmlyc3QgdHdvIChjYWxsIHRoZW0gJHFbMF0kIGFuZCAkcVsxXSQpIGFyZSBlbnRhbmdsZWQsIHRoZSB0aGlyZCwgJHFbMl0kLCBpcyB1bmVudGFuZ2xlZCB3aXRoIHRoZSBmaXJzdCB0d28uIFdlIGFyZSBnb2luZyB0byBtZWFzdXJlICRxWzBdJCBmaXJzdCwgd2hpY2ggc2hvdWxkIGNhdXNlICRxWzFdJCB0byBjb2xsYXBzZSB0byB0aGUgc2FtZSBzdGF0ZSBidXQgbGVhdmUgJHFbMl0kIGZyZWUgdG8gY2hvb3NlIGF0IHJhbmRvbSBiZXR3ZWVuIDEgYW5kIDAuIEkndmUgZmlkZGxlZCBhcm91bmQgd2l0aCB0aGUgc3VtcyBmb3IgdGhpcyBzeXN0ZW0gW292ZXIgaGVyZV0oaHR0cHM6Ly93d3cuYW5kaWZ1Z2FyZC5pbmZvL21lYXN1cmVtZW50LWluLXF1YW50dW0tY29tcHV0aW5nLykuDQoNCkJhY2sgdG8gUHl0aG9uLCB0byBkZWZpbmUgdGhlIGNpcmN1aXQ6DQoNCmBgYHtweXRob259DQpxcmVnX3EgPSBRdWFudHVtUmVnaXN0ZXIoMywgJ3EnKQ0KY3JlZ19jID0gQ2xhc3NpY2FsUmVnaXN0ZXIoMywgJ2MnKQ0KY2lyY3VpdCA9IFF1YW50dW1DaXJjdWl0KHFyZWdfcSwgY3JlZ19jKQ0KDQpjaXJjdWl0LnJlc2V0KHFyZWdfcVswXSkNCmNpcmN1aXQucmVzZXQocXJlZ19xWzFdKQ0KY2lyY3VpdC5yZXNldChxcmVnX3FbMl0pDQpjaXJjdWl0LmgocXJlZ19xWzBdKQ0KY2lyY3VpdC5oKHFyZWdfcVsyXSkNCmNpcmN1aXQuY3gocXJlZ19xWzBdLCBxcmVnX3FbMV0pDQpjaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzBdLCBjcmVnX2NbMF0pDQpjaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzFdLCBjcmVnX2NbMV0pDQpjaXJjdWl0Lm1lYXN1cmUocXJlZ19xWzJdLCBjcmVnX2NbMl0pDQpgYGANCg0KRHJhdyB0aGUgY2lyY3VpdDoNCg0KYGBge3B5dGhvbn0NCmNpcmN1aXQuZHJhdygnbXBsJykuc2hvdygpDQpgYGANCg0KVGhpcyB3aWxsIHBvcCB1cCBpbiBhIG5ldyB3aW5kb3c7IEkgY2FuJ3Qgd29yayBvdXQgaG93IHRvIGdldCBpdCB0byBhcHBlYXIgaW4gdGhlIE1hcmtkb3duIG90aGVyIHRoYW4gYnkgc2F2aW5nIGl0IGFuZCBpbnNlcnRpbmcgYSBwbmcuLi4NCg0KIVtdKGNpcmN1aXQucG5nKQ0KDQpFbnRlciB5b3VyIFRPUCBTRUNSRVQgQVBJIHRva2VuIGhlcmU6DQoNCmBgYHtweXRob259DQpJQk1RLnNhdmVfYWNjb3VudCgnMTMzNycsIG92ZXJ3cml0ZT1UcnVlKQ0KYGBgDQoNCkxvYWQgdXAgdGhlIGFjY291bnQ6DQoNCmBgYHtweXRob259DQpwcm92aWRlciA9IElCTVEubG9hZF9hY2NvdW50KCkNCmBgYA0KDQpTZWUgd2hhdCBiYWNrZW5kcyBJIGNhbiBhY2Nlc3MgKEkgcHV0IHRoaXMgb24gb25lIGxpbmUgYXMgdGhlIG91dHB1dCBhcHBlYXJzIHRvIGJlIHByaW50ZWQgYmVmb3JlIHByaW50IGlzIGNhbGxlZCBvdGhlcndpc2UpOg0KDQpgYGB7cHl0aG9ufQ0KZm9yIGJhY2tlbmQgaW4gcHJvdmlkZXIuYmFja2VuZHMoKTogcHJpbnQoYmFja2VuZCkNCmBgYA0KDQpJIGNob3NlICppYm1xX2xpbWEqOg0KDQpgYGB7cHl0aG9ufQ0KbGltYSA9IHByb3ZpZGVyLmdldF9iYWNrZW5kKCdpYm1xX2xpbWEnKQ0KYGBgDQoNCihBbmQsIG5vdGUgdG8gc2VsZiAtLSBsb29rIHVwIGhvdyB0byBxdWVyeSBxdWV1ZSBsZW5ndGguKQ0KDQpTZW5kIG9mZiB0aGUgam9iIQ0KDQpgYGB7cHl0aG9ufQ0Kam9iID0gZXhlY3V0ZShjaXJjdWl0LA0KICAgICAgICAgICAgICBiYWNrZW5kID0gbGltYSwNCiAgICAgICAgICAgICAgc2hvdHMgPSAxMDI0KQ0Kam9iLmpvYl9pZCgpDQpgYGANCg0KSWYgUlN0dWRpbyBjcmFzaGVzIGZvciBhbnkgcmVhc29uIChhbmQgaXQgZGlkKSwgdGhlbiB0aGUgam9iIGNhbiBiZSByZXRyaWV2ZWQgd2l0aCB0aGUgSUQgdGhhdCB3b3VsZCBoYXZlIGJlZW4gcHJpbnRlZCBhYm92ZSBiZWZvcmUgaXQgY3Jhc2hlZCAob3IgbG9nIGludG8geW91ciBJQk0gUXVhbnR1bSB3ZWIgYWNjb3VudCBhbmQgZmluZCB0aGUgSUQgdGhlcmUpOg0KDQpgYGB7cHl0aG9ufQ0Kam9iID0gbGltYS5yZXRyaWV2ZV9qb2IoJzYzNWFlYTI3MzMzYWViMDQ3Mjg5ZjNiYScpDQpgYGANCg0KVXNlIHRoaXMgY29tbWFuZCB0byBxdWVyeSB0aGUgc3RhdHVzIG9mIHRoZSBqb2I6DQoNCmBgYHtweXRob259DQpqb2Iuc3RhdHVzKCkNCmBgYA0KDQpUaGVyZSdzIGFub3RoZXIgY29tbWFuZCB0aGF0IGJ1c3ktd2FpdHMgdW50aWwgdGhlIGpvYiBpcyBkb25lLiBUcnlpbmcgdG8gaW50ZXJydXB0IGl0IGlzIHdoYXQgY3Jhc2hlZCBSU3R1ZGlvLCBzbyBJIHdvdWxkbid0IHJlY29tbWVuZCBpdCENCg0KT25jZSB0aGUgam9iIGlzIGRvbmUsIHRoZSByZXN1bHRzOg0KDQpgYGB7cHl0aG9ufQ0KcmVzID0gam9iLnJlc3VsdCgpDQpgYGANCg0KSGVyZSBhcmUgdGhlIGZyZXF1ZW5jaWVzIG9mIGVhY2ggb3V0Y29tZSBpbiBQeXRob246DQoNCmBgYHtweXRob259DQp2YWxzID0gcmVzLmdldF9jb3VudHMoY2lyY3VpdCkNCnZhbHMNCmBgYA0KDQpXZSBjYW4gYWxzbyBzZWUgdGhlbSBpbiBSIHVzaW5nIGBweSRgIGFzIGEgcHJlZml4IG9uIHZhcmlhYmxlIG5hbWVzOg0KDQpgYGB7cn0NCnB5JHZhbHMNCmBgYA0KDQpOb3cgaG93IGRvIEkgdHJhbnNmb3JtIHRoYXQgKGl0J3MgYSBkaWN0aW9uYXJ5IG9mIHNvbWUgZGVzY3JpcHRpb24pIGludG8gYSBkYXRhIGZyYW1lLi4uPyBJIGNvdWxkbid0IHNlZSBhbiBlYXN5IHdheSBpbiBSIChJIGRpZG4ndCB0aGluayB2ZXJ5IGxvbmcpLiBJdCB3YXMgZWFzaWVyIGF0IHRoZSBQeXRob24gZW5kOg0KDQpgYGB7cHl0aG9ufQ0KaW1wb3J0IHBhbmRhcw0KZGYgPSBwYW5kYXMuRGF0YUZyYW1lKGxpc3QodmFscy5pdGVtcygpKSwNCiAgICAgICAgICAgICAgICAgICAgICBjb2x1bW5zID0gWydPdXRjb21lJywgJ0ZyZXEnXSkNCmRmDQpgYGANCg0KQmFjayBpbiBSOg0KDQpgYGB7cn0NCnB5JGRmDQpgYGANCg0KQW5kIG5vdyB3ZSBjYW4gYXNrIGdncGxvdCB0byBtYWtlIGEgcGljIQ0KDQpgYGB7cn0NCnB5JGRmIHw+IA0KICBnZ3Bsb3QoYWVzKHggPSBPdXRjb21lLCB5ID0gRnJlcSwgZmlsbCA9IE91dGNvbWUpKSArDQogIGdlb21fY29sKCkgKw0KICB0aGVtZShsZWdlbmQucG9zaXRpb249Im5vbmUiKQ0KYGBgDQoNCg0K</div>
 
 
 
